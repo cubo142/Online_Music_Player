@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AudioFile extends StatefulWidget {
   final AudioPlayer? advancedPlayer;
@@ -14,14 +15,20 @@ class AudioFile extends StatefulWidget {
 class _AudioFileState extends State<AudioFile> {
   //Track track thời lượng audio
   Duration _duration = new Duration();
+
   //Track audio đã play tới đâu
   Duration _position = new Duration();
 
   final String path = 'https://tainhacmienphi.biz/get/song/api/8708';
+
   //trạng thái các nút trên audio player
+  double playBackRate = 1.0;
   bool isPlaying = false;
   bool isPaused = false;
   bool isLoop = false;
+  bool isRepeat = false;
+  Color color = Colors.black;
+
   List<IconData> _icons = [
     Icons.play_circle_fill,
     Icons.pause_circle_filled,
@@ -42,6 +49,17 @@ class _AudioFileState extends State<AudioFile> {
       });
     });
     this.widget.advancedPlayer?.setUrl(path);
+    this.widget.advancedPlayer?.onPlayerCompletion.listen((event) {
+      setState(() {
+        _position = Duration(seconds: 0);
+        if (isRepeat == true) {
+          isPlaying = true;
+        } else {
+          isPlaying = false;
+          isRepeat = false;
+        }
+      });
+    });
   }
 
   @override
@@ -54,11 +72,14 @@ class _AudioFileState extends State<AudioFile> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(_position.toString().split(".")[0], style: TextStyle(fontSize: 16)),
-              Text(_duration.toString().split(".")[0], style: TextStyle(fontSize: 16)),
+              Text(_position.toString().split(".")[0],
+                  style: TextStyle(fontSize: 16)),
+              Text(_duration.toString().split(".")[0],
+                  style: TextStyle(fontSize: 16)),
             ],
           ),
         ),
+        slider(),
         loadAsset(),
       ],
     ));
@@ -67,7 +88,12 @@ class _AudioFileState extends State<AudioFile> {
   Widget btnStart() {
     return IconButton(
       padding: const EdgeInsets.only(bottom: 10),
-      icon: isPlaying == false ? Icon(_icons[0],size:50) : Icon(_icons[1],size: 50,),
+      icon: isPlaying == false
+          ? Icon(_icons[0], size: 40)
+          : Icon(
+              _icons[1],
+              size: 40,
+            ),
       onPressed: () {
         if (isPlaying == false) {
           this.widget.advancedPlayer?.play(path);
@@ -90,9 +116,116 @@ class _AudioFileState extends State<AudioFile> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          btnRepeat(),
+          btnSlow(),
           btnStart(),
+          btnFast(),
+          btnLoop(),
         ],
       ),
     );
+  }
+
+  Widget slider() {
+    return Slider(
+        activeColor: Colors.red,
+        inactiveColor: Colors.grey,
+        value: _position.inSeconds.toDouble(),
+        min: 0.0,
+        max: _duration.inSeconds.toDouble(),
+        onChanged: (double value) {
+          setState(() {
+            changeToSecond(value.toInt());
+            value = value;
+          });
+        });
+  }
+
+  //Hàm tương tác với slider
+  void changeToSecond(int second) {
+    //giá trị value được truyền vào hàm sẽ lưu vào second
+    Duration newDuration = Duration(seconds: second);
+    this.widget.advancedPlayer?.seek(newDuration);
+    //Cách hoạt động:
+    //1. truyền value vào second dc định nghĩa của hàm khởi tạo
+    //2. Khai báo 1 constructor Duration nhận vào second
+    //3.sử dụng seek để lấy value Duration (aka slider)
+  }
+
+  Widget btnFast() {
+    return IconButton(
+      icon: Icon(Icons.fast_forward, size: 20),
+      color: Colors.black,
+      onPressed: () {
+        if (playBackRate > 0.25 && playBackRate < 2.5) {
+          playBackRate += 0.25;
+          this.widget.advancedPlayer?.setPlaybackRate(playBackRate);
+          showPlayBackRate();
+        } else if (playBackRate == 0.25) {
+          playBackRate += 0.25;
+          this.widget.advancedPlayer?.setPlaybackRate(playBackRate);
+          showPlayBackRate();
+        }
+      },
+    );
+  }
+
+  Widget btnSlow() {
+    return Transform.scale(
+        scaleX: -1,
+        child: IconButton(
+          icon: Icon(Icons.fast_forward, size: 20),
+          color: Colors.black,
+          onPressed: () {
+            if (playBackRate > 0.25 && playBackRate <= 2.5) {
+              playBackRate -= 0.25;
+              this.widget.advancedPlayer?.setPlaybackRate(playBackRate);
+              showPlayBackRate();
+            } else if (playBackRate == 2.5) {
+              playBackRate -= 0.25;
+              this.widget.advancedPlayer?.setPlaybackRate(playBackRate);
+              showPlayBackRate();
+            }
+          },
+        ));
+  }
+
+  Widget btnLoop() {
+    return IconButton(
+      icon: Icon(Icons.loop, size: 20),
+      color: Colors.black,
+      onPressed: () {},
+    );
+  }
+
+  Widget btnRepeat() {
+    return IconButton(
+      icon: Icon(Icons.repeat, size: 20),
+      color: color,
+      onPressed: () {
+        if (isRepeat == false) {
+          this.widget.advancedPlayer?.setReleaseMode(ReleaseMode.LOOP);
+          setState(() {
+            isRepeat = true;
+            color = Colors.blue;
+          });
+        } else if (isRepeat == true) {
+          this.widget.advancedPlayer?.setReleaseMode(ReleaseMode.RELEASE);
+          setState(() {
+            isRepeat = false;
+            color = Colors.black;
+          });
+        }
+      },
+    );
+  }
+
+  void showPlayBackRate() {
+    Fluttertoast.showToast(
+        msg: "Music speed: ${playBackRate.toString()}",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        fontSize: 16.0);
   }
 }
