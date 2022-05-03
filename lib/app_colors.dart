@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-const Color headBackground = Color(0xFF432342);
-const Color audioList = Color(0xFF5A3E5B);
+const Color headBackground = Color(0xFF039dfc);
+const Color audioList = Color(0xFFe3f4ff);
 const Color lightOrange = Color(0xFFEFA154);
 
 final Color background = Color(0xFFfafafc);

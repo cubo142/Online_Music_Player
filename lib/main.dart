@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:online_music_player/my_home_page.dart';
+import 'package:online_music_player/routes.dart';
 import 'detail_audio_page.dart';
 import 'package:flutter/services.dart';
 
@@ -14,11 +15,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     return MaterialApp(
-        title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: MyHomePage());
+        initialRoute: MyHomePage.routeName,
+        routes: route,
+    );
   }
 }

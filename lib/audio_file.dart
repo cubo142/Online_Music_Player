@@ -5,8 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class AudioFile extends StatefulWidget {
   final AudioPlayer? advancedPlayer;
+  final String? audioPath;
 
-  const AudioFile({Key? key, this.advancedPlayer}) : super(key: key);
+  const AudioFile({Key? key, this.advancedPlayer,this.audioPath}) : super(key: key);
 
   @override
   State<AudioFile> createState() => _AudioFileState();
@@ -19,7 +20,6 @@ class _AudioFileState extends State<AudioFile> {
   //Track audio đã play tới đâu
   Duration _position = new Duration();
 
-  final String path = 'https://tainhacmienphi.biz/get/song/api/8708';
 
   //trạng thái các nút trên audio player
   double playBackRate = 1.0;
@@ -48,7 +48,7 @@ class _AudioFileState extends State<AudioFile> {
         _position = p;
       });
     });
-    this.widget.advancedPlayer?.setUrl(path);
+    this.widget.advancedPlayer?.setUrl(this.widget.audioPath as String);
     this.widget.advancedPlayer?.onPlayerCompletion.listen((event) {
       setState(() {
         _position = Duration(seconds: 0);
@@ -96,7 +96,7 @@ class _AudioFileState extends State<AudioFile> {
             ),
       onPressed: () {
         if (isPlaying == false) {
-          this.widget.advancedPlayer?.play(path);
+          this.widget.advancedPlayer?.play(this.widget.audioPath as String);
           setState(() {
             isPlaying = true;
           });
@@ -190,9 +190,10 @@ class _AudioFileState extends State<AudioFile> {
         ));
   }
 
+  //cân nhắc 1 chức năng nào đó
   Widget btnLoop() {
     return IconButton(
-      icon: Icon(Icons.loop, size: 20),
+      icon: Icon(Icons.loop, size: 0),
       color: Colors.black,
       onPressed: () {},
     );

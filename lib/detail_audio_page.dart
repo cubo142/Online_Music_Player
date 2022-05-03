@@ -4,7 +4,11 @@ import 'package:online_music_player/audio_file.dart';
 import 'app_colors.dart' as AppColors;
 
 class DetailAudioPage extends StatefulWidget {
-  const DetailAudioPage({Key? key}) : super(key: key);
+  const DetailAudioPage({Key? key, this.songsData, this.index})
+      : super(key: key);
+  static String routeName = "/detail_audio";
+  final songsData;
+  final int? index;
 
   @override
   _DetailAudioPageState createState() => _DetailAudioPageState();
@@ -15,7 +19,7 @@ class _DetailAudioPageState extends State<DetailAudioPage> {
 
   //Initialize audio player
   @override
-  void initState(){
+  void initState() {
     super.initState();
     advancedPlayer = AudioPlayer();
   }
@@ -51,7 +55,10 @@ class _DetailAudioPageState extends State<DetailAudioPage> {
                   icon: Icon(
                     Icons.arrow_back_ios,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    advancedPlayer?.stop();
+                    Navigator.of(context).pop();
+                    },
                 ),
                 actions: [
                   IconButton(
@@ -81,28 +88,28 @@ class _DetailAudioPageState extends State<DetailAudioPage> {
                       SizedBox(
                         height: screenHeight * 0.1,
                       ),
-                      Text("THE WATER CURE",
+                      Text(this.widget.songsData[this.widget.index]["title"],
                           style: TextStyle(
                               fontSize: 21,
                               fontWeight: FontWeight.bold,
                               fontFamily: "Roboto")),
-                      Text(
-                        "Martin Hyatt",
+                      Text(this.widget.songsData[this.widget.index]["text"],
                         style: TextStyle(fontSize: 16),
                       ),
-                      AudioFile(advancedPlayer:advancedPlayer),
+                      AudioFile(advancedPlayer: advancedPlayer,audioPath: this.widget.songsData[this.widget.index]["audio"]),
                     ],
                   ))),
 
           //Audio Image
           Positioned(
               top: screenHeight * 0.12,
-              left: (screenWidth - 110) / 2, //Căn chỉnh lề trái phải để đưa về giữa
+              left: (screenWidth - 110) / 2,
+              //Căn chỉnh lề trái phải để đưa về giữa
               right: (screenWidth - 110) / 2,
               height: screenHeight * 0.16,
               child: Container(
                 decoration: BoxDecoration(
-                    color: AppColors.lightOrange,
+                    color: Colors.grey,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.white, width: 2)),
                 child: Padding(
@@ -112,10 +119,9 @@ class _DetailAudioPageState extends State<DetailAudioPage> {
                     // borderRadius: BorderRadius.circular(20),
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
-                    // image: DecorationImage(
-                    //     image: AssetImage('assets/img/taylor.png'),
-                    //     fit: BoxFit.cover),
-
+                    image: DecorationImage(
+                        image: AssetImage(this.widget.songsData[this.widget.index]["img"]),
+                        fit: BoxFit.cover),
                   )),
                 ),
               ))
