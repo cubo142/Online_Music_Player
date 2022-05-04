@@ -1,11 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:online_music_player/login/login_page.dart';
 import 'package:online_music_player/my_home_page.dart';
 import 'package:online_music_player/routes.dart';
 import 'detail_audio_page.dart';
 import 'package:flutter/services.dart';
 
-void main() {
-
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: MyHomePage.routeName,
+        initialRoute: LoginPage.routeName,
         routes: route,
     );
   }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "477004760552",
+    "project_id": "online-music-player-5fd31",
+    "storage_bucket": "online-music-player-5fd31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477004760552:android:ae5156a8633b2bae3f505d",
+        "android_client_info": {
+          "package_name": "com.example.online_music_player"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "477004760552-221en6k909vuv7hs4epipp2152uo5b3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJadqjzhXplvEwVWyhO9i141dSBHHkhQ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "477004760552-221en6k909vuv7hs4epipp2152uo5b3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
