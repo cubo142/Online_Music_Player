@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:online_music_player/detail_audio_page.dart';
+import 'package:online_music_player/login/login_page.dart';
+import 'package:provider/provider.dart';
 import 'app_colors.dart' as AppColors;
 import 'my_tabs.dart';
 
@@ -174,8 +177,13 @@ class _MyHomePageState extends State<MyHomePage>
                               itemBuilder: (_, i) {
                                 return GestureDetector(
                                   onTap: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context)=> DetailAudioPage(songsData: songs,index:i)));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DetailAudioPage(
+                                                    songsData: songs,
+                                                    index: i)));
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(
