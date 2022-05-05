@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:online_music_player/my_home_page.dart';
-
+import 'package:online_music_player/signup/signup.dart';
+import 'package:online_music_player/Services/AuthenticationService.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class _BodyState extends State<Body> {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,25 +45,6 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  //Login function
-  static Future<User?> loginUsingEmailPassword(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
-    try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      user = userCredential.user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
-        print("Email does not exist");
-      }
-    }
-    return user;
-  }
-
   @override
   Widget build(BuildContext context) {
     //Textfield Controller
@@ -69,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
     TextEditingController _passwordController = TextEditingController();
 
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,21 +91,40 @@ class _LoginFormState extends State<LoginForm> {
             width: double.infinity,
             child: RawMaterialButton(
               onPressed: () async {
-                User? user = await loginUsingEmailPassword(email: _emailController.text, password: _passwordController.text, context: context);
+                User? user =
+                    await AuthenticationServices.SignInWithEmailPassword(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                        context: context);
                 print(user);
-                if(user != null){
-                  Navigator.of(context).pushReplacementNamed(MyHomePage.routeName);
+                if (user != null) {
+                  Navigator.of(context)
+                      .pushReplacementNamed(MyHomePage.routeName);
                 }
               },
               fillColor: Color(0xFF2196F3),
               elevation: 0.0,
               padding: EdgeInsets.symmetric(vertical: 20),
-              child: Text("SignIn",
+              child: Text("SIGN IN",
                   style: TextStyle(color: Colors.white, fontSize: 16)),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(25)),
             ),
           ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+              alignment: Alignment.center,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed(SignUpPage.routeName);
+                },
+                child: Text(
+                  "Don't have an account? Create",
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ))
         ],
       ),
     );

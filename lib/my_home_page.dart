@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:online_music_player/data_manager/data_manager.dart';
 import 'package:online_music_player/detail_audio_page.dart';
 import 'package:online_music_player/my_playlist_page.dart';
+import 'package:online_music_player/login/login_page.dart';
+import 'package:provider/provider.dart';
 import 'app_colors.dart' as AppColors;
 import 'my_tabs.dart';
 
@@ -27,14 +30,12 @@ class _MyHomePageState extends State<MyHomePage>
   //fetch dc data nhưng tạm chưa render dc
   List? playList = [];
 
-  void onTapped(int index){
+  void onTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
     pageController.jumpToPage(index);
   }
-
-
 
   ReadData() async {
     await DefaultAssetBundle.of(context)
@@ -80,9 +81,8 @@ class _MyHomePageState extends State<MyHomePage>
         child: SafeArea(
           child: Scaffold(
               body: PageView(
-                controller: pageController,
-                children: [
-                  Column(
+                controller:pageController,
+                children:[ Column(
                   children: [
                     SizedBox(
                       height: 10,
@@ -111,8 +111,8 @@ class _MyHomePageState extends State<MyHomePage>
                     //   children: [
                     //     Container(
                     //         margin: const EdgeInsets.only(left: 20),
-                    //         child:
-                    //         Text("Popular Song", style: TextStyle(fontSize: 30)))
+                    //         child: Text("Popular Song",
+                    //             style: TextStyle(fontSize: 30)))
                     //   ],
                     // ),
                     // SizedBox(
@@ -130,18 +130,20 @@ class _MyHomePageState extends State<MyHomePage>
                     //                 height: 180,
                     //                 child: PageView.builder(
                     //                     controller:
-                    //                     PageController(viewportFraction: 0.8),
+                    //                         PageController(viewportFraction: 0.8),
                     //                     itemCount: popularSongs == null
                     //                         ? 0
                     //                         : popularSongs?.length,
                     //                     itemBuilder: (_, i) {
                     //                       return Container(
                     //                         height: 180,
-                    //                         width: MediaQuery.of(context).size.width,
-                    //                         margin: const EdgeInsets.only(right: 10),
+                    //                         width:
+                    //                             MediaQuery.of(context).size.width,
+                    //                         margin:
+                    //                             const EdgeInsets.only(right: 10),
                     //                         decoration: BoxDecoration(
                     //                             borderRadius:
-                    //                             BorderRadius.circular(15),
+                    //                                 BorderRadius.circular(15),
                     //                             image: DecorationImage(
                     //                               image: AssetImage(
                     //                                   popularSongs?[i]["img"]),
@@ -161,22 +163,26 @@ class _MyHomePageState extends State<MyHomePage>
                                   pinned: true,
                                   backgroundColor: AppColors.sliverBackground,
                                   bottom: PreferredSize(
-                                    preferredSize: Size.fromHeight(30),
+                                    preferredSize: Size.fromHeight(50),
                                     child: Container(
-                                      margin:
-                                      const EdgeInsets.only(bottom: 20, left: 20),
+                                      margin: const EdgeInsets.only(
+                                          bottom: 20, left: 20),
                                       child: TabBar(
-                                        indicatorPadding: const EdgeInsets.all(0),
-                                        indicatorSize: TabBarIndicatorSize.label,
+                                        indicatorPadding:
+                                        const EdgeInsets.all(0),
+                                        indicatorSize:
+                                        TabBarIndicatorSize.label,
                                         labelPadding:
                                         const EdgeInsets.only(right: 10),
                                         controller: _tabController,
                                         isScrollable: true,
                                         indicator: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(25),
+                                            borderRadius:
+                                            BorderRadius.circular(25),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.2),
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
                                                 blurRadius: 7,
                                                 offset: Offset(0, 0),
                                               )
@@ -202,7 +208,8 @@ class _MyHomePageState extends State<MyHomePage>
                               controller: _tabController,
                               children: [
                                 ListView.builder(
-                                    itemCount: songs == null ? 0 : songs?.length,
+                                    itemCount:
+                                    songs == null ? 0 : songs?.length,
                                     itemBuilder: (_, i) {
                                       return GestureDetector(
                                         onTap: () {
@@ -224,7 +231,8 @@ class _MyHomePageState extends State<MyHomePage>
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                   BorderRadius.circular(10),
-                                                  color: AppColors.tabVarViewColor,
+                                                  color:
+                                                  AppColors.tabVarViewColor,
                                                   boxShadow: [
                                                     BoxShadow(
                                                       blurRadius: 2,
@@ -234,19 +242,24 @@ class _MyHomePageState extends State<MyHomePage>
                                                     )
                                                   ]),
                                               child: Container(
-                                                  padding: const EdgeInsets.all(8),
+                                                  padding:
+                                                  const EdgeInsets.all(8),
                                                   child: Row(
                                                     children: [
                                                       Container(
                                                           width: 90,
                                                           height: 120,
-                                                          decoration: BoxDecoration(
+                                                          decoration:
+                                                          BoxDecoration(
                                                             borderRadius:
-                                                            BorderRadius.circular(
+                                                            BorderRadius
+                                                                .circular(
                                                                 10),
-                                                            image: DecorationImage(
+                                                            image:
+                                                            DecorationImage(
                                                               image: AssetImage(
-                                                                  songs?[i]["img"]),
+                                                                  songs?[i]
+                                                                  ["img"]),
                                                               fit: BoxFit.fill,
                                                             ),
                                                           )),
@@ -255,7 +268,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                       ),
                                                       Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           Row(
                                                             children: [
@@ -264,12 +278,11 @@ class _MyHomePageState extends State<MyHomePage>
                                                                   color: AppColors
                                                                       .starColor),
                                                               Text(
-                                                                songs?[i]["rating"],
+                                                                songs?[i]
+                                                                ["rating"],
                                                                 style: TextStyle(
-                                                                    color: AppColors.menu2Color,
-
-
-                                                                ),
+                                                                    color: AppColors
+                                                                        .menu2Color),
                                                               ),
                                                             ],
                                                           ),
@@ -280,12 +293,11 @@ class _MyHomePageState extends State<MyHomePage>
                                                             songs?[i]["title"],
                                                             style: TextStyle(
                                                                 fontSize: 16,
-                                                                fontFamily: "Avenir",
+                                                                fontFamily:
+                                                                "Avenir",
                                                                 fontWeight:
-                                                                FontWeight.bold,
-                                                            ),
-                                                            overflow: TextOverflow.ellipsis,
-
+                                                                FontWeight
+                                                                    .bold),
                                                           ),
                                                           SizedBox(
                                                             height: 5,
@@ -294,7 +306,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                             songs?[i]["text"],
                                                             style: TextStyle(
                                                                 fontSize: 16,
-                                                                fontFamily: "Avenir",
+                                                                fontFamily:
+                                                                "Avenir",
                                                                 color: AppColors
                                                                     .subTitleText),
                                                           ),
@@ -304,12 +317,14 @@ class _MyHomePageState extends State<MyHomePage>
                                                           Container(
                                                             width: 60,
                                                             height: 15,
-                                                            decoration: BoxDecoration(
+                                                            decoration:
+                                                            BoxDecoration(
                                                               borderRadius:
                                                               BorderRadius
-                                                                  .circular(3),
-                                                              color:
-                                                              AppColors.loveColor,
+                                                                  .circular(
+                                                                  3),
+                                                              color: AppColors
+                                                                  .loveColor,
                                                             ),
                                                             child: Text(
                                                               "Love",
@@ -317,62 +332,61 @@ class _MyHomePageState extends State<MyHomePage>
                                                                   fontSize: 12,
                                                                   fontFamily:
                                                                   "Avenir",
-                                                                  color:
-                                                                  Colors.white),
+                                                                  color: Colors
+                                                                      .white),
                                                             ),
-                                                            alignment:
-                                                            Alignment.center,
+                                                            alignment: Alignment
+                                                                .center,
                                                           )
                                                         ],
-                                                      ),
-                                                      SizedBox(
-                                                        width: 75,
-                                                      ),
-                                                      IconButton(
-                                                        onPressed: () {
-                                                          // playList?.add(songs?[i]);
-                                                          // print(playList.toString());
-                                                        },
-                                                        icon: Icon(Icons.add),
-                                                      ),
+                                                      )
                                                     ],
                                                   ))),
                                         ),
                                       );
                                     }),
                                 ListView.builder(
-                                    itemCount: songs == null ? 0 : songs?.length,
+                                    itemCount:
+                                    songs == null ? 0 : songs?.length,
                                     itemBuilder: (_, i) {
                                       return Container(
                                         margin: const EdgeInsets.only(
-                                            left: 20, right: 20, top: 10, bottom: 10),
+                                            left: 20,
+                                            right: 20,
+                                            top: 10,
+                                            bottom: 10),
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                 BorderRadius.circular(10),
-                                                color: AppColors.tabVarViewColor,
+                                                color:
+                                                AppColors.tabVarViewColor,
                                                 boxShadow: [
                                                   BoxShadow(
                                                     blurRadius: 2,
                                                     offset: Offset(0, 0),
-                                                    color:
-                                                    Colors.grey.withOpacity(0.2),
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                   )
                                                 ]),
                                             child: Container(
-                                                padding: const EdgeInsets.all(8),
+                                                padding:
+                                                const EdgeInsets.all(8),
                                                 child: Row(
                                                   children: [
                                                     Container(
                                                         width: 90,
                                                         height: 120,
-                                                        decoration: BoxDecoration(
+                                                        decoration:
+                                                        BoxDecoration(
                                                           borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                          image: DecorationImage(
+                                                          BorderRadius
+                                                              .circular(10),
+                                                          image:
+                                                          DecorationImage(
                                                             image: AssetImage(
-                                                                songs?[i]["img"]),
+                                                                songs?[i]
+                                                                ["img"]),
                                                             fit: BoxFit.fill,
                                                           ),
                                                         )),
@@ -381,7 +395,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                     ),
                                                     Column(
                                                       crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                      CrossAxisAlignment
+                                                          .start,
                                                       children: [
                                                         Row(
                                                           children: [
@@ -390,7 +405,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                                 color: AppColors
                                                                     .starColor),
                                                             Text(
-                                                              songs?[i]["rating"],
+                                                              songs?[i]
+                                                              ["rating"],
                                                               style: TextStyle(
                                                                   color: AppColors
                                                                       .menu2Color),
@@ -404,9 +420,11 @@ class _MyHomePageState extends State<MyHomePage>
                                                           songs?[i]["title"],
                                                           style: TextStyle(
                                                               fontSize: 16,
-                                                              fontFamily: "Avenir",
+                                                              fontFamily:
+                                                              "Avenir",
                                                               fontWeight:
-                                                              FontWeight.bold),
+                                                              FontWeight
+                                                                  .bold),
                                                         ),
                                                         SizedBox(
                                                           height: 5,
@@ -415,7 +433,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                           songs?[i]["text"],
                                                           style: TextStyle(
                                                               fontSize: 16,
-                                                              fontFamily: "Avenir",
+                                                              fontFamily:
+                                                              "Avenir",
                                                               color: AppColors
                                                                   .subTitleText),
                                                         ),
@@ -425,21 +444,26 @@ class _MyHomePageState extends State<MyHomePage>
                                                         Container(
                                                           width: 60,
                                                           height: 15,
-                                                          decoration: BoxDecoration(
+                                                          decoration:
+                                                          BoxDecoration(
                                                             borderRadius:
-                                                            BorderRadius.circular(
+                                                            BorderRadius
+                                                                .circular(
                                                                 3),
-                                                            color:
-                                                            AppColors.loveColor,
+                                                            color: AppColors
+                                                                .loveColor,
                                                           ),
                                                           child: Text(
                                                             "Love",
                                                             style: TextStyle(
                                                                 fontSize: 12,
-                                                                fontFamily: "Avenir",
-                                                                color: Colors.white),
+                                                                fontFamily:
+                                                                "Avenir",
+                                                                color: Colors
+                                                                    .white),
                                                           ),
-                                                          alignment: Alignment.center,
+                                                          alignment:
+                                                          Alignment.center,
                                                         )
                                                       ],
                                                     )
@@ -448,38 +472,47 @@ class _MyHomePageState extends State<MyHomePage>
                                       );
                                     }),
                                 ListView.builder(
-                                    itemCount: songs == null ? 0 : songs?.length,
+                                    itemCount:
+                                    songs == null ? 0 : songs?.length,
                                     itemBuilder: (_, i) {
                                       return Container(
                                         margin: const EdgeInsets.only(
-                                            left: 20, right: 20, top: 10, bottom: 10),
+                                            left: 20,
+                                            right: 20,
+                                            top: 10,
+                                            bottom: 10),
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                 BorderRadius.circular(10),
-                                                color: AppColors.tabVarViewColor,
+                                                color:
+                                                AppColors.tabVarViewColor,
                                                 boxShadow: [
                                                   BoxShadow(
                                                     blurRadius: 2,
                                                     offset: Offset(0, 0),
-                                                    color:
-                                                    Colors.grey.withOpacity(0.2),
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
                                                   )
                                                 ]),
                                             child: Container(
-                                                padding: const EdgeInsets.all(8),
+                                                padding:
+                                                const EdgeInsets.all(8),
                                                 child: Row(
                                                   children: [
                                                     Container(
                                                         width: 90,
                                                         height: 120,
-                                                        decoration: BoxDecoration(
+                                                        decoration:
+                                                        BoxDecoration(
                                                           borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                          image: DecorationImage(
+                                                          BorderRadius
+                                                              .circular(10),
+                                                          image:
+                                                          DecorationImage(
                                                             image: AssetImage(
-                                                                songs?[i]["img"]),
+                                                                songs?[i]
+                                                                ["img"]),
                                                             fit: BoxFit.fill,
                                                           ),
                                                         )),
@@ -488,7 +521,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                     ),
                                                     Column(
                                                       crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                      CrossAxisAlignment
+                                                          .start,
                                                       children: [
                                                         Row(
                                                           children: [
@@ -497,7 +531,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                                 color: AppColors
                                                                     .starColor),
                                                             Text(
-                                                              songs?[i]["rating"],
+                                                              songs?[i]
+                                                              ["rating"],
                                                               style: TextStyle(
                                                                   color: AppColors
                                                                       .menu2Color),
@@ -511,9 +546,11 @@ class _MyHomePageState extends State<MyHomePage>
                                                           songs?[i]["title"],
                                                           style: TextStyle(
                                                               fontSize: 16,
-                                                              fontFamily: "Avenir",
+                                                              fontFamily:
+                                                              "Avenir",
                                                               fontWeight:
-                                                              FontWeight.bold),
+                                                              FontWeight
+                                                                  .bold),
                                                         ),
                                                         SizedBox(
                                                           height: 5,
@@ -522,7 +559,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                           songs?[i]["text"],
                                                           style: TextStyle(
                                                               fontSize: 16,
-                                                              fontFamily: "Avenir",
+                                                              fontFamily:
+                                                              "Avenir",
                                                               color: AppColors
                                                                   .subTitleText),
                                                         ),
@@ -532,21 +570,26 @@ class _MyHomePageState extends State<MyHomePage>
                                                         Container(
                                                           width: 60,
                                                           height: 15,
-                                                          decoration: BoxDecoration(
+                                                          decoration:
+                                                          BoxDecoration(
                                                             borderRadius:
-                                                            BorderRadius.circular(
+                                                            BorderRadius
+                                                                .circular(
                                                                 3),
-                                                            color:
-                                                            AppColors.loveColor,
+                                                            color: AppColors
+                                                                .loveColor,
                                                           ),
                                                           child: Text(
                                                             "Love",
                                                             style: TextStyle(
                                                                 fontSize: 12,
-                                                                fontFamily: "Avenir",
-                                                                color: Colors.white),
+                                                                fontFamily:
+                                                                "Avenir",
+                                                                color: Colors
+                                                                    .white),
                                                           ),
-                                                          alignment: Alignment.center,
+                                                          alignment:
+                                                          Alignment.center,
                                                         )
                                                       ],
                                                     )
@@ -555,21 +598,20 @@ class _MyHomePageState extends State<MyHomePage>
                                       );
                                     }),
                               ],
-                            )))
+                            ))),
                   ],
-                ),
-                  MyPlayListPage(),
-                ],
+                ),MyPlayListPage()]
               ),
-              bottomNavigationBar: BottomNavigationBar(items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(Icons.home), label:'Home'),
-                BottomNavigationBarItem(icon: Icon(Icons.music_note), label:'PlayList'),
-              ],
-              currentIndex: _selectedIndex,
-              onTap: onTapped,
-              )
-
-          ),
+              bottomNavigationBar: BottomNavigationBar(
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.home), label: 'Home'),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.music_note), label: 'PlayList'),
+                ],
+                currentIndex: _selectedIndex,
+                onTap: onTapped,
+              )),
         ));
   }
 }
