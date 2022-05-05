@@ -1,7 +1,9 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
+
 
 class AudioFile extends StatefulWidget {
   final AudioPlayer? advancedPlayer;
@@ -11,7 +13,11 @@ class AudioFile extends StatefulWidget {
 
   @override
   State<AudioFile> createState() => _AudioFileState();
+
+
 }
+
+
 
 class _AudioFileState extends State<AudioFile> {
   //Track track thời lượng audio
@@ -36,6 +42,7 @@ class _AudioFileState extends State<AudioFile> {
 
   @override
   void initState() {
+
     super.initState();
     this.widget.advancedPlayer?.onDurationChanged.listen((Duration d) {
       setState(() {
