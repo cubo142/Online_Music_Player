@@ -20,6 +20,7 @@ class AudioFile extends StatefulWidget {
 
 
 class _AudioFileState extends State<AudioFile> {
+
   //Track track thời lượng audio
   Duration _duration = new Duration();
 
@@ -71,6 +72,7 @@ class _AudioFileState extends State<AudioFile> {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
         child: Column(
       children: [
@@ -101,8 +103,9 @@ class _AudioFileState extends State<AudioFile> {
               _icons[1],
               size: 40,
             ),
-      onPressed: () {
+      onPressed: () async {
         if (isPlaying == false) {
+
           this.widget.advancedPlayer?.play(this.widget.audioPath as String);
           setState(() {
             isPlaying = true;

@@ -120,7 +120,7 @@ class _DetailAudioPageState extends State<DetailAudioPage> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
                     image: DecorationImage(
-                        image: AssetImage(this.widget.songsData[this.widget.index]["img"]),
+                        image: NetworkImage(this.widget.songsData[this.widget.index]["img"]),
                         fit: BoxFit.cover),
                   )),
                 ),

@@ -1,8 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:online_music_player/my_playlist_page.dart';
+
+import '../model/songs.dart';
 
 class AuthenticationServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference playListCollection =
+      FirebaseFirestore.instance.collection('playlist');
+  final String? uid;
+
+  AuthenticationServices({this.uid});
+
+  Future updateUserData(String title) async {
+    return await playListCollection.doc(uid).set({
+      'title':title
+    });
+  }
+
+
 
   //Sign In
   static Future<User?> SignInWithEmailPassword(
@@ -38,6 +55,7 @@ class AuthenticationServices {
     } on FirebaseAuthException catch (e) {
       print(e.message);
     }
+    await AuthenticationServices(uid: user?.uid).updateUserData('title');
     return user;
   }
 
