@@ -26,7 +26,7 @@ final uid = user?.uid;
 
 
 Future<List> getPlayList() async {
-  QuerySnapshot querySnapshot = await Firestore.collection('playlist').doc(uid).collection('songs').get();
+  QuerySnapshot querySnapshot = await Firestore.collection('user').doc(uid).collection('playlist').get();
   songPlayList = querySnapshot.docs.map((doc) => doc.data()).toList();
   for(int i = 0; i<songPlayList.length;i++){
     for(int j=0;j<songPlayList.length;j++){

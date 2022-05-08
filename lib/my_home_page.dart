@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage>
  addToPlayList() async {
    final User? user = auth.currentUser;
    final uid = user?.uid;
-   QuerySnapshot querySnapshot = await Firestore.collection('playlist').doc(uid).collection('songs').get();
+   QuerySnapshot querySnapshot = await Firestore.collection('user').doc(uid).collection('playlist').get();
    playlist = querySnapshot.docs.map((doc) => doc.data()).toList();
    for (int i = 0; i < playlist.length; i++) {
      for (int j = 0; j < playlist.length; j++) {
@@ -139,14 +139,14 @@ class _MyHomePageState extends State<MyHomePage>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.menu, size: 24, color: Colors.black),
+                            // Icon(Icons.menu, size: 24, color: Colors.black),
                             Row(
                               children: [
                                 Icon(Icons.search),
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Icon(Icons.notifications),
+                                // Icon(Icons.notifications),
                               ],
                             )
                           ],
@@ -389,8 +389,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                           onPressed: () async {
                                                             final User? user = auth.currentUser;
                                                             final uid = user?.uid;
-                                                            await FirebaseFirestore.instance.collection('playlist').doc(uid)
-                                                                .collection('songs')
+                                                            await FirebaseFirestore.instance.collection('user').doc(uid)
+                                                                .collection('playlist')
                                                                 .doc()
                                                                 .set({
                                                               "audio": songList[i]["audio"],

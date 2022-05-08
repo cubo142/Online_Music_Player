@@ -8,7 +8,7 @@ import '../model/songs.dart';
 class AuthenticationServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference playListCollection =
-      FirebaseFirestore.instance.collection('playlist');
+      FirebaseFirestore.instance.collection('user');
   final String? uid;
 
   AuthenticationServices({this.uid});
