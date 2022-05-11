@@ -8,6 +8,7 @@ import 'app_colors.dart' as AppColors;
 class MyPlayListPage extends StatefulWidget {
   const MyPlayListPage({Key? key}) : super(key: key);
   static const routeName = '/myplaylist';
+
   @override
   State<MyPlayListPage> createState() => _MyPlayListPageState();
 }
@@ -26,13 +27,17 @@ Future<List> getPlayList() async {
   return songPlayList;
 }
 
+
 void checkAccount(BuildContext context) {
   if (user == null) {
     Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
   }
-}//check playlist, sau khi chuyển ra ko đăng nhập vào lại đc :))
+} //check playlist, sau khi chuyển ra ko đăng nhập vào lại đc :))
 
 class _MyPlayListPageState extends State<MyPlayListPage> {
+
+
+
   @override
   Widget build(BuildContext context) {
     getPlayList();
@@ -167,6 +172,9 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                                       // var querySnapshots = await collection;
                                       var doc = snapshot.docs[0];
                                       doc.reference.delete();
+                                      setState(() {
+                                        
+                                      });
                                     },
                                     child: Icon(Icons.delete))
                               ],
