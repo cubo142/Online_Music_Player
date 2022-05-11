@@ -14,12 +14,8 @@ class AuthenticationServices {
   AuthenticationServices({this.uid});
 
   Future updateUserData(String title) async {
-    return await playListCollection.doc(uid).set({
-      'title':title
-    });
+    return await playListCollection.doc(uid).set({'title': title});
   }
-
-
 
   //Sign In
   static Future<User?> SignInWithEmailPassword(
@@ -59,8 +55,13 @@ class AuthenticationServices {
     return user;
   }
 
-  //Sign Out not complete
-  Future<void> signOut() async {
-    await _auth.signOut();
+  //Sign Out
+  Future signOut() async {
+    try {
+      return _auth.signOut();
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
   }
 }

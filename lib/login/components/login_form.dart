@@ -25,12 +25,15 @@ class _BodyState extends State<Body> {
       body: FutureBuilder(
         future: _initializeFirebase(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData) {
+            return MyHomePage();
+          } else if (snapshot.connectionState == ConnectionState.done) {
             return LoginForm();
+          } else {
+            return Center(child: CircularProgressIndicator());
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
         },
       ),
     );
@@ -93,8 +96,8 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: () async {
                 User? user =
                     await AuthenticationServices.SignInWithEmailPassword(
-                        email: _emailController.text,
-                        password: _passwordController.text,
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
                         context: context);
                 print(user);
                 if (user != null) {

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:online_music_player/login/login_page.dart';
 import 'app_colors.dart' as AppColors;
 
 class MyPlayListPage extends StatefulWidget {
@@ -18,9 +19,6 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 final User? user = auth.currentUser;
 final uid = user?.uid;
 
-
-
-
 Future<List> getPlayList() async {
   QuerySnapshot querySnapshot =
       await Firestore.collection('user').doc(uid).collection('playlist').get();
@@ -28,15 +26,24 @@ Future<List> getPlayList() async {
   return songPlayList;
 }
 
-class _MyPlayListPageState extends State<MyPlayListPage> {
+void checkAccount(BuildContext context) {
+  if (user == null) {
+    Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+  }
+}//check playlist, sau khi chuyển ra ko đăng nhập vào lại đc :))
 
+class _MyPlayListPageState extends State<MyPlayListPage> {
   @override
   Widget build(BuildContext context) {
     getPlayList();
     print(songPlayList.length);
+
     return StreamBuilder(
-        stream: Firestore.collection('user').doc(uid).collection('playlist').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot snapshot){
+        stream: Firestore.collection('user')
+            .doc(uid)
+            .collection('playlist')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
@@ -78,8 +85,8 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                                   width: 80,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
-                                      image:
-                                      NetworkImage('${songPlayList[i]["img"]}'),
+                                      image: NetworkImage(
+                                          '${songPlayList[i]["img"]}'),
                                       fit: BoxFit.fill,
                                     ),
                                     shape: BoxShape.circle,
@@ -94,11 +101,12 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                                     Row(
                                       children: [
                                         Icon(Icons.star,
-                                            size: 24, color: AppColors.starColor),
+                                            size: 24,
+                                            color: AppColors.starColor),
                                         Text(
                                           songPlayList[i]["rating"],
-                                          style:
-                                          TextStyle(color: AppColors.menu2Color),
+                                          style: TextStyle(
+                                              color: AppColors.menu2Color),
                                         ),
                                       ],
                                     ),
@@ -125,22 +133,22 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Container(
-                                      width: 60,
-                                      height: 15,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        color: AppColors.loveColor,
-                                      ),
-                                      child: Text(
-                                        "Love",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontFamily: "Avenir",
-                                            color: Colors.white),
-                                      ),
-                                      alignment: Alignment.center,
-                                    )
+                                    // Container(
+                                    //   width: 60,
+                                    //   height: 15,
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(3),
+                                    //     color: AppColors.loveColor,
+                                    //   ),
+                                    //   child: Text(
+                                    //     "Love",
+                                    //     style: TextStyle(
+                                    //         fontSize: 12,
+                                    //         fontFamily: "Avenir",
+                                    //         color: Colors.white),
+                                    //   ),
+                                    //   alignment: Alignment.center,
+                                    // )
                                   ],
                                 ),
                                 SizedBox(
@@ -148,7 +156,14 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                                 ),
                                 OutlinedButton(
                                     onPressed: () async {
-                                      var snapshot = await Firestore.collection('user').doc(uid).collection('playlist').where("songID", isEqualTo: songPlayList[i]["songID"]).get();
+                                      var snapshot =
+                                          await Firestore.collection('user')
+                                              .doc(uid)
+                                              .collection('playlist')
+                                              .where("songID",
+                                                  isEqualTo: songPlayList[i]
+                                                      ["songID"])
+                                              .get();
                                       // var querySnapshots = await collection;
                                       var doc = snapshot.docs[0];
                                       doc.reference.delete();
@@ -159,8 +174,6 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                   ),
                 );
               });
-        }
-    );
-
+        });
   }
 }
