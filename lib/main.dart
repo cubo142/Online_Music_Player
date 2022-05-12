@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: MyHomePage.routeName,
+      initialRoute: Home.routeName,
       routes: route,
     );
   }

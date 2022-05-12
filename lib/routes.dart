@@ -13,8 +13,7 @@ final Map<String, WidgetBuilder> route = {
   LoginPage.routeName: (context) => LoginPage(),
   MyPlayListPage.routeName: (context) => MyPlayListPage(),
   SignUpPage.routeName:(context) => SignUpPage(),
-
-
+  Home.routeName:(context) => Home(),
 
 
 

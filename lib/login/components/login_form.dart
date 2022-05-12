@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,11 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Align(alignment: Alignment.topRight,
+          child: IconButton(icon: Icon(Icons.close), onPressed: () {
+            Navigator.pushReplacementNamed(context, Home.routeName);
+          },),
+          ),
           Text(
             "MSPlay",
             style: TextStyle(
@@ -102,7 +108,7 @@ class _LoginFormState extends State<LoginForm> {
                 print(user);
                 if (user != null) {
                   Navigator.of(context)
-                      .pushReplacementNamed(MyHomePage.routeName);
+                      .pushReplacementNamed(Home.routeName);
                 }
               },
               fillColor: Color(0xFF2196F3),
