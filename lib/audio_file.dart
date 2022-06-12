@@ -57,6 +57,8 @@ class _AudioFileState extends State<AudioFile> {
       });
     });
     this.widget.advancedPlayer?.setUrl(this.widget.audioPath as String);
+
+    //Khi chơi xong nhạc dừng lại
     this.widget.advancedPlayer?.onPlayerCompletion.listen((event) {
       setState(() {
         _position = Duration(seconds: 0);
@@ -105,7 +107,6 @@ class _AudioFileState extends State<AudioFile> {
             ),
       onPressed: () async {
         if (isPlaying == false) {
-
           this.widget.advancedPlayer?.play(this.widget.audioPath as String);
           setState(() {
             isPlaying = true;

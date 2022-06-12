@@ -41,6 +41,20 @@ class _MyHomePageState extends State<MyHomePage>
     pageController.jumpToPage(index);
   }
 
+  void checkExisted(){
+    bool isPlaying = true;
+    int currentSong = 2;
+    List song = [1,2,3,4,5,6,7,8];
+    List tempList = [];
+    List playedSong = song.where((s) => s == currentSong ).toList();
+    if(isPlaying == true){
+      for(int i = 0;i<playedSong.length;i++){
+        tempList.add(i);
+      }
+    }
+    print(tempList);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -77,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
 
-  Future _signOut() async {
+  Future<void> _signOut() async {
     await auth.signOut();
     await Firestore.terminate();
     await Firestore.clearPersistence();
@@ -104,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
+    checkExisted();
     return FutureBuilder(
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
