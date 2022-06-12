@@ -7,6 +7,7 @@ import 'package:online_music_player/Services/AuthenticationService.dart';
 import 'package:online_music_player/detail_audio_page.dart';
 import 'package:online_music_player/my_playlist_page.dart';
 import 'package:online_music_player/login/login_page.dart';
+import 'package:online_music_player/profile_page.dart';
 import 'package:provider/provider.dart';
 import 'app_colors.dart' as AppColors;
 import 'model/songs.dart';
@@ -72,8 +73,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Future<void> getData() async {
-    QuerySnapshot qr = await Firestore.collection('songs')
-        .where('title', isGreaterThanOrEqualTo: name).get();
+    QuerySnapshot qr = await Firestore.collection('songs').where('title', isGreaterThanOrEqualTo: name).get();
     songList = qr.docs.map((doc) => doc.data()).toList();
     // QuerySnapshot querySnapshot = await Firestore.collection('songs').get();
     // songList = querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -87,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage>
       userEmail = "Sign in";
       isLogin = false;
     }
-
   }
 
 
@@ -143,43 +142,43 @@ class _MyHomePageState extends State<MyHomePage>
                       },
                     ),
                     ),
-                    Container(
-                        margin: const EdgeInsets.only(left: 20, right: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Icon(Icons.menu, size: 24, color: Colors.black),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                InkWell(
-                                  onTap: _signOut,
-                                  child: Icon(Icons.exit_to_app),
-                                ),
-                                SizedBox(
-                                  width: 70,
-                                ),
-                                GestureDetector(
-                                  onTap: (){
-                                    if(isLogin == true){
-                                      print("User is currently logged in");
-                                    }
-                                    else if (isLogin == false){
-                                      Navigator.pushReplacementNamed(context, LoginPage.routeName);
-                                    }
-                                  },
-                                  child: Text("${userEmail}",
-                                    style: TextStyle(color: Colors.blue)
-                                    ,
-                                  ),
-                                ),
-
-                              ],
-                            )
-                          ],
-                        )),
+                    // Container(
+                    //     margin: const EdgeInsets.only(left: 20, right: 20),
+                    //     child: Row(
+                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //       children: [
+                    //         // Icon(Icons.menu, size: 24, color: Colors.black),
+                    //         // Row(
+                    //         //   children: [
+                    //         //     SizedBox(
+                    //         //       width: 10,
+                    //         //     ),
+                    //         //     InkWell(
+                    //         //       onTap: _signOut,
+                    //         //       child: Icon(Icons.exit_to_app),
+                    //         //     ),
+                    //         //     SizedBox(
+                    //         //       width: 70,
+                    //         //     ),
+                    //         //     GestureDetector(
+                    //         //       onTap: (){
+                    //         //         if(isLogin == true){
+                    //         //           print("User is currently logged in");
+                    //         //         }
+                    //         //         else if (isLogin == false){
+                    //         //           Navigator.pushReplacementNamed(context, LoginPage.routeName);
+                    //         //         }
+                    //         //       },
+                    //         //       child: Text("${userEmail}",
+                    //         //         style: TextStyle(color: Colors.blue)
+                    //         //         ,
+                    //         //       ),
+                    //         //     ),
+                    //         //
+                    //         //   ],
+                    //         // )
+                    //       ],
+                    //     )),
                     Expanded(
                         child: ListView.builder(
                           itemCount: songList.length,
@@ -978,7 +977,9 @@ class _HomeState extends State<Home> {
 
   void _onItemTapped(int index) async {
     if(await FirebaseAuth.instance.currentUser == null){
-      Navigator.pushReplacementNamed(context, LoginPage.routeName);
+      setState(() {
+        _selectedIndex = index;
+      });
     }
     else if (await FirebaseAuth.instance.currentUser != null){
       setState(() {
@@ -991,6 +992,7 @@ class _HomeState extends State<Home> {
   static const List<Widget> _widgetOptions = <Widget>[
     MyHomePage(),
     MyPlayListPage(),
+    ProfilePage(),
   ];
 
   @override
@@ -1002,8 +1004,8 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.music_note), label: 'PlayList'),
+            BottomNavigationBarItem(icon: Icon(Icons.music_note), label: 'PlayList'),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Profile'),
           ],
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
