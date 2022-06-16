@@ -9,8 +9,8 @@ class AppTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 120,
-      height: 50,
+      width: 100,
+      height: 35,
       child: Text(this.text.toString(),
           style: TextStyle(color: Colors.white, fontSize: 20)),
       alignment: Alignment.center,

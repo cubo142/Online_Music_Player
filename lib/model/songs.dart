@@ -4,6 +4,7 @@ class Songs {
   String? text;
   String? audio;
   String? img;
+  String? category;
 
   Songs({this.title, this.rating, this.text, this.audio, this.img});
 }

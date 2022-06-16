@@ -23,7 +23,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  List? popularSongs;
+  List popularSongs = [];
+  List newSongs = [];
+  List trendingSongs = [];
   List? songs;
   ScrollController? _scrollController;
   TabController? _tabController;
@@ -42,14 +44,14 @@ class _MyHomePageState extends State<MyHomePage>
     pageController.jumpToPage(index);
   }
 
-  void checkExisted(){
+  void checkExisted() {
     bool isPlaying = true;
     int currentSong = 2;
-    List song = [1,2,3,4,5,6,7,8];
+    List song = [1, 2, 3, 4, 5, 6, 7, 8];
     List tempList = [];
-    List playedSong = song.where((s) => s == currentSong ).toList();
-    if(isPlaying == true){
-      for(int i = 0;i<playedSong.length;i++){
+    List playedSong = song.where((s) => s == currentSong).toList();
+    if (isPlaying == true) {
+      for (int i = 0; i < playedSong.length; i++) {
         tempList.add(i);
       }
     }
@@ -66,29 +68,42 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _searchController.removeListener(_onSearchChange);
     _searchController.dispose();
     super.dispose();
   }
 
   Future<void> getData() async {
-    QuerySnapshot qr = await Firestore.collection('songs').where('title', isGreaterThanOrEqualTo: name).get();
+    QuerySnapshot qr = await Firestore.collection('songs')
+        .where('title', isGreaterThanOrEqualTo: name)
+        .get();
     songList = qr.docs.map((doc) => doc.data()).toList();
+    QuerySnapshot pop = await Firestore.collection('songs')
+        .where('category', isEqualTo: 'Popular')
+        .get();
+    popularSongs = pop.docs.map((doc) => doc.data()).toList();
+    QuerySnapshot trending = await Firestore.collection('songs')
+        .where('category', isEqualTo: 'Trending')
+        .get();
+    trendingSongs = trending.docs.map((doc) => doc.data()).toList();
+    QuerySnapshot newSong = await Firestore.collection('songs')
+        .where('category', isEqualTo: 'New')
+        .get();
+    newSongs = newSong.docs.map((doc) => doc.data()).toList();
     // QuerySnapshot querySnapshot = await Firestore.collection('songs').get();
     // songList = querySnapshot.docs.map((doc) => doc.data()).toList();
     final user = await auth.currentUser;
-    if(user != null){
+    if (user != null) {
       setState(() {
         userEmail = user?.email;
         isLogin = true;
       });
-    } else if ( user == null){
+    } else if (user == null) {
       userEmail = "Sign in";
       isLogin = false;
     }
   }
-
 
   Future<void> _signOut() async {
     await auth.signOut();
@@ -106,13 +121,13 @@ class _MyHomePageState extends State<MyHomePage>
 
   //Search
   TextEditingController _searchController = TextEditingController();
-  _onSearchChange(){
+  _onSearchChange() {
     print(_searchController.text);
   }
 
   @override
-  void didChangeDependencies(){
-      super.didChangeDependencies();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -130,228 +145,1058 @@ class _MyHomePageState extends State<MyHomePage>
                     SizedBox(
                       height: 10,
                     ),
-                    Padding(padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child:TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search)
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      child: TextField(
+                        decoration:
+                            InputDecoration(prefixIcon: Icon(Icons.search)),
+                        onChanged: (val) {
+                          setState(() {
+                            name = val;
+                          });
+                        },
                       ),
-                      onChanged: (val){
-                        setState(() {
-                          name = val;
-                        });
-                      },
                     ),
+                    Container(
+                        margin: const EdgeInsets.only(left: 20, right: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Icon(Icons.menu, size: 24, color: Colors.black),
+                            // Row(
+                            //   children: [
+                            //     SizedBox(
+                            //       width: 10,
+                            //     ),
+                            //     InkWell(
+                            //       onTap: _signOut,
+                            //       child: Icon(Icons.exit_to_app),
+                            //     ),
+                            //     SizedBox(
+                            //       width: 70,
+                            //     ),
+                            //     GestureDetector(
+                            //       onTap: (){
+                            //         if(isLogin == true){
+                            //           print("User is currently logged in");
+                            //         }
+                            //         else if (isLogin == false){
+                            //           Navigator.pushReplacementNamed(context, LoginPage.routeName);
+                            //         }
+                            //       },
+                            //       child: Text("${userEmail}",
+                            //         style: TextStyle(color: Colors.blue)
+                            //         ,
+                            //       ),
+                            //     ),
+                            //
+                            //   ],
+                            // )
+                          ],
+                        )),
+                    Row(
+                      children: [
+                        Container(
+                            margin: const EdgeInsets.only(left: 20),
+                            child: Text("Popular Song",
+                                style: TextStyle(fontSize: 20)))
+                      ],
                     ),
-                    // Container(
-                    //     margin: const EdgeInsets.only(left: 20, right: 20),
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //       children: [
-                    //         // Icon(Icons.menu, size: 24, color: Colors.black),
-                    //         // Row(
-                    //         //   children: [
-                    //         //     SizedBox(
-                    //         //       width: 10,
-                    //         //     ),
-                    //         //     InkWell(
-                    //         //       onTap: _signOut,
-                    //         //       child: Icon(Icons.exit_to_app),
-                    //         //     ),
-                    //         //     SizedBox(
-                    //         //       width: 70,
-                    //         //     ),
-                    //         //     GestureDetector(
-                    //         //       onTap: (){
-                    //         //         if(isLogin == true){
-                    //         //           print("User is currently logged in");
-                    //         //         }
-                    //         //         else if (isLogin == false){
-                    //         //           Navigator.pushReplacementNamed(context, LoginPage.routeName);
-                    //         //         }
-                    //         //       },
-                    //         //       child: Text("${userEmail}",
-                    //         //         style: TextStyle(color: Colors.blue)
-                    //         //         ,
-                    //         //       ),
-                    //         //     ),
-                    //         //
-                    //         //   ],
-                    //         // )
-                    //       ],
-                    //     )),
-                    Expanded(
-                        child: ListView.builder(
-                          itemCount: songList.length,
-                          itemBuilder: (_, i) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DetailAudioPage(
-                                            songsData: songList, index: i)));
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    left: 20, right: 20, top: 10, bottom: 10),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        height: 150,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                                top: 0,
+                                left: -20,
+                                right: 0,
                                 child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: AppColors.tabVarViewColor,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            blurRadius: 2,
-                                            offset: Offset(0, 0),
-                                            color: Colors.grey.withOpacity(0.2),
-                                          )
-                                        ]),
-                                    child: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  height: 70,
-                                                  width: 80,
-                                                  decoration: BoxDecoration(
+                                    height: 150,
+                                    child: PageView.builder(
+                                        controller: PageController(
+                                            viewportFraction: 0.8),
+                                        itemCount: popularSongs.length,
+                                        itemBuilder: (_, i) {
+                                          return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            DetailAudioPage(
+                                                                songsData:
+                                                                    popularSongs,
+                                                                index: i)));
+                                              },
+                                              child: Container(
+                                                alignment: Alignment.topLeft,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                margin: const EdgeInsets.only(
+                                                    right: 10),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
                                                     image: DecorationImage(
                                                       image: NetworkImage(
-                                                          '${songList[i]["img"]}'),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                          popularSongs[i]
+                                                              ["img"]),
+                                                      fit: BoxFit.cover,
+                                                    )),
+                                                child: Row(
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        Icon(Icons.star,
-                                                            size: 24,
-                                                            color: AppColors
-                                                                .starColor),
-                                                        Text(
-                                                          songList[i]["rating"],
-                                                          style: TextStyle(
-                                                              color: AppColors
-                                                                  .menu2Color),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 130,
-                                                      child: (
-                                                          Text(
-                                                            songList[i]["title"],
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontFamily: "Avenir",
-                                                                fontWeight:
-                                                                FontWeight.bold),
-                                                          )
-                                                      ),
-                                                    ),
-
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
+                                                    Icon(Icons.star,
+                                                        size: 15,
+                                                        color: AppColors
+                                                            .starColor),
                                                     Text(
-                                                      songList[i]["text"],
+                                                      songList[i]["rating"],
                                                       style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontFamily: "Avenir",
+                                                          fontSize: 15,
                                                           color: AppColors
-                                                              .subTitleText),
+                                                              .menu2Color),
                                                     ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    // Container(
-                                                    //   width: 60,
-                                                    //   height: 15,
-                                                    //   decoration:
-                                                    //   BoxDecoration(
-                                                    //     borderRadius:
-                                                    //     BorderRadius
-                                                    //         .circular(
-                                                    //         3),
-                                                    //     color: AppColors
-                                                    //         .loveColor,
-                                                    //   ),
-                                                    //   child: Text(
-                                                    //     "Love",
-                                                    //     style: TextStyle(
-                                                    //         fontSize: 12,
-                                                    //         fontFamily:
-                                                    //         "Avenir",
-                                                    //         color: Colors
-                                                    //             .white),
-                                                    //   ),
-                                                    //   alignment: Alignment
-                                                    //       .center,
-                                                    // )
                                                   ],
                                                 ),
-                                              ],
-                                            ),
-                                            OutlinedButton(
-                                                onPressed: () async {
-                                                  final User? user =
-                                                      auth.currentUser;
-                                                  final uid = user?.uid;
-                                                  var snapshot = await Firestore
-                                                          .collection('user')
-                                                      .doc(uid)
-                                                      .collection('playlist')
-                                                      .where("songID",
-                                                          isEqualTo: songList[i]
-                                                              ["songID"])
-                                                      .get();
-                                                  if (snapshot.docs.length ==
-                                                      1) {
-                                                    print(
-                                                        "document is already exist");
-                                                  } else {
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('user')
-                                                        .doc(uid)
-                                                        .collection('playlist')
-                                                        .doc()
-                                                        .set({
-                                                      "audio": songList[i]
-                                                          ["audio"],
-                                                      "rating": songList[i]
-                                                          ["rating"],
-                                                      "text": songList[i]
-                                                          ["text"],
-                                                      "img": songList[i]["img"],
-                                                      "title": songList[i]
-                                                          ["title"],
-                                                      "songID": songList[i]
-                                                          ["songID"],
-                                                    });
-                                                  }
-                                                },
-                                                child: Icon(Icons.add))
-                                          ],
-                                        ))),
-                              ),
-                            );
-                          }),
-                    ),
+                                              ));
+                                        })))
+                          ],
+                        )),
+                    Expanded(
+                        child: NestedScrollView(
+                            controller: _scrollController,
+                            headerSliverBuilder:
+                                (BuildContext context, bool isScroll) {
+                              return [
+                                SliverAppBar(
+                                  pinned: true,
+                                  backgroundColor: AppColors.sliverBackground,
+                                  bottom: PreferredSize(
+                                    preferredSize: Size.fromHeight(50),
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          bottom: 20, left: 20),
+                                      child: TabBar(
+                                        indicatorPadding:
+                                            const EdgeInsets.all(0),
+                                        indicatorSize:
+                                            TabBarIndicatorSize.label,
+                                        labelPadding:
+                                            const EdgeInsets.only(right: 10),
+                                        controller: _tabController,
+                                        isScrollable: true,
+                                        indicator: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
+                                                blurRadius: 7,
+                                                offset: Offset(0, 0),
+                                              )
+                                            ]),
+                                        tabs: [
+                                          AppTabs(
+                                              color: AppColors.menu1Color,
+                                              text: "All"),
+                                          AppTabs(
+                                              color: AppColors.menu2Color,
+                                              text: "New"),
+                                          AppTabs(
+                                              color: AppColors.menu3Color,
+                                              text: "Treding"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ];
+                            },
+                            body: TabBarView(
+                              controller: _tabController,
+                              children: [
+                                //All songs
+                                Expanded(
+                                  child: ListView.builder(
+                                      itemCount: songList.length,
+                                      itemBuilder: (_, i) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailAudioPage(
+                                                            songsData: songList,
+                                                            index: i)));
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                top: 10,
+                                                bottom: 10),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: AppColors
+                                                        .tabVarViewColor,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        blurRadius: 2,
+                                                        offset: Offset(0, 0),
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                      )
+                                                    ]),
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 70,
+                                                              width: 80,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                image:
+                                                                    DecorationImage(
+                                                                  image: NetworkImage(
+                                                                      '${songList[i]["img"]}'),
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        size:
+                                                                            24,
+                                                                        color: AppColors
+                                                                            .starColor),
+                                                                    Text(
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "rating"],
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              AppColors.menu2Color),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 130,
+                                                                  child: (Text(
+                                                                    songList[i][
+                                                                        "title"],
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  )),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Text(
+                                                                  songList[i]
+                                                                      ["text"],
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontFamily:
+                                                                          "Avenir",
+                                                                      color: AppColors
+                                                                          .subTitleText),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Container(
+                                                                  width: 60,
+                                                                  height: 15,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(3),
+                                                                    color: AppColors
+                                                                        .loveColor,
+                                                                  ),
+                                                                  child: Text(
+                                                                    songList[i][
+                                                                        "category"],
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        OutlinedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              final User? user =
+                                                                  auth.currentUser;
+                                                              final uid =
+                                                                  user?.uid;
+                                                              var snapshot = await Firestore
+                                                                      .collection(
+                                                                          'user')
+                                                                  .doc(uid)
+                                                                  .collection(
+                                                                      'playlist')
+                                                                  .where(
+                                                                      "songID",
+                                                                      isEqualTo:
+                                                                          songList[i]
+                                                                              [
+                                                                              "songID"])
+                                                                  .get();
+                                                              if (snapshot.docs
+                                                                      .length ==
+                                                                  1) {
+                                                                print(
+                                                                    "document is already exist");
+                                                              } else {
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'user')
+                                                                    .doc(uid)
+                                                                    .collection(
+                                                                        'playlist')
+                                                                    .doc()
+                                                                    .set({
+                                                                  "audio":
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "audio"],
+                                                                  "rating":
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "rating"],
+                                                                  "text":
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "text"],
+                                                                  "img":
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "img"],
+                                                                  "title":
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "title"],
+                                                                  "songID":
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "songID"],
+                                                                });
+                                                              }
+                                                            },
+                                                            child:
+                                                                Icon(Icons.add))
+                                                      ],
+                                                    ))),
+                                          ),
+                                        );
+                                      }),
+                                ),
+                                //New
+                                Expanded(
+                                  child: ListView.builder(
+                                      itemCount: newSongs.length,
+                                      itemBuilder: (_, i) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailAudioPage(
+                                                            songsData: newSongs,
+                                                            index: i)));
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                top: 10,
+                                                bottom: 10),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: AppColors
+                                                        .tabVarViewColor,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        blurRadius: 2,
+                                                        offset: Offset(0, 0),
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                      )
+                                                    ]),
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 70,
+                                                              width: 80,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                image:
+                                                                    DecorationImage(
+                                                                  image: NetworkImage(
+                                                                      '${newSongs[i]["img"]}'),
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        size:
+                                                                            24,
+                                                                        color: AppColors
+                                                                            .starColor),
+                                                                    Text(
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "rating"],
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              AppColors.menu2Color),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 130,
+                                                                  child: (Text(
+                                                                    newSongs[i][
+                                                                        "title"],
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  )),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Text(
+                                                                  newSongs[i]
+                                                                      ["text"],
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontFamily:
+                                                                          "Avenir",
+                                                                      color: AppColors
+                                                                          .subTitleText),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Container(
+                                                                  width: 60,
+                                                                  height: 15,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(3),
+                                                                    color: AppColors
+                                                                        .loveColor,
+                                                                  ),
+                                                                  child: Text(
+                                                                    newSongs[i][
+                                                                        "category"],
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        OutlinedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              final User? user =
+                                                                  auth.currentUser;
+                                                              final uid =
+                                                                  user?.uid;
+                                                              var snapshot = await Firestore
+                                                                      .collection(
+                                                                          'user')
+                                                                  .doc(uid)
+                                                                  .collection(
+                                                                      'playlist')
+                                                                  .where(
+                                                                      "songID",
+                                                                      isEqualTo:
+                                                                          newSongs[i]
+                                                                              [
+                                                                              "songID"])
+                                                                  .get();
+                                                              if (snapshot.docs
+                                                                      .length ==
+                                                                  1) {
+                                                                print(
+                                                                    "document is already exist");
+                                                              } else {
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'user')
+                                                                    .doc(uid)
+                                                                    .collection(
+                                                                        'playlist')
+                                                                    .doc()
+                                                                    .set({
+                                                                  "audio":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "audio"],
+                                                                  "rating":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "rating"],
+                                                                  "text":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "text"],
+                                                                  "img":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "img"],
+                                                                  "title":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "title"],
+                                                                  "songID":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "songID"],
+                                                                });
+                                                              }
+                                                            },
+                                                            child:
+                                                                Icon(Icons.add))
+                                                      ],
+                                                    ))),
+                                          ),
+                                        );
+                                      }),
+                                ),
+                                //Trending
+                                Expanded(
+                                  child: ListView.builder(
+                                      itemCount: trendingSongs.length,
+                                      itemBuilder: (_, i) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailAudioPage(
+                                                            songsData:
+                                                                trendingSongs,
+                                                            index: i)));
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                top: 10,
+                                                bottom: 10),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: AppColors
+                                                        .tabVarViewColor,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        blurRadius: 2,
+                                                        offset: Offset(0, 0),
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                      )
+                                                    ]),
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              height: 70,
+                                                              width: 80,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                image:
+                                                                    DecorationImage(
+                                                                  image: NetworkImage(
+                                                                      '${trendingSongs[i]["img"]}'),
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        size:
+                                                                            24,
+                                                                        color: AppColors
+                                                                            .starColor),
+                                                                    Text(
+                                                                      trendingSongs[
+                                                                              i]
+                                                                          [
+                                                                          "rating"],
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              AppColors.menu2Color),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 130,
+                                                                  child: (Text(
+                                                                    trendingSongs[
+                                                                            i][
+                                                                        "title"],
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  )),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Text(
+                                                                  trendingSongs[
+                                                                          i]
+                                                                      ["text"],
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontFamily:
+                                                                          "Avenir",
+                                                                      color: AppColors
+                                                                          .subTitleText),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 5,
+                                                                ),
+                                                                Container(
+                                                                  width: 60,
+                                                                  height: 15,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(3),
+                                                                    color: AppColors
+                                                                        .loveColor,
+                                                                  ),
+                                                                  child: Text(
+                                                                    trendingSongs[
+                                                                            i][
+                                                                        "category"],
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontFamily:
+                                                                            "Avenir",
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        OutlinedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              final User? user =
+                                                                  auth.currentUser;
+                                                              final uid =
+                                                                  user?.uid;
+                                                              var snapshot = await Firestore
+                                                                      .collection(
+                                                                          'user')
+                                                                  .doc(uid)
+                                                                  .collection(
+                                                                      'playlist')
+                                                                  .where(
+                                                                      "songID",
+                                                                      isEqualTo:
+                                                                          trendingSongs[i]
+                                                                              [
+                                                                              "songID"])
+                                                                  .get();
+                                                              if (snapshot.docs
+                                                                      .length ==
+                                                                  1) {
+                                                                print(
+                                                                    "document is already exist");
+                                                              } else {
+                                                                await FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'user')
+                                                                    .doc(uid)
+                                                                    .collection(
+                                                                        'playlist')
+                                                                    .doc()
+                                                                    .set({
+                                                                  "audio":
+                                                                      trendingSongs[
+                                                                              i]
+                                                                          [
+                                                                          "audio"],
+                                                                  "rating":
+                                                                      trendingSongs[
+                                                                              i]
+                                                                          [
+                                                                          "rating"],
+                                                                  "text":
+                                                                      trendingSongs[
+                                                                              i]
+                                                                          [
+                                                                          "text"],
+                                                                  "img":
+                                                                      trendingSongs[
+                                                                              i]
+                                                                          [
+                                                                          "img"],
+                                                                  "title":
+                                                                      trendingSongs[
+                                                                              i]
+                                                                          [
+                                                                          "title"],
+                                                                  "songID":
+                                                                      trendingSongs[
+                                                                              i]
+                                                                          [
+                                                                          "songID"],
+                                                                });
+                                                              }
+                                                            },
+                                                            child:
+                                                                Icon(Icons.add))
+                                                      ],
+                                                    ))),
+                                          ),
+                                        );
+                                      }),
+                                ),
+                              ],
+                            ))),
+                    // Expanded(
+                    //   child: ListView.builder(
+                    //       itemCount: songList.length,
+                    //       itemBuilder: (_, i) {
+                    //         return GestureDetector(
+                    //           onTap: () {
+                    //             Navigator.push(
+                    //                 context,
+                    //                 MaterialPageRoute(
+                    //                     builder: (context) => DetailAudioPage(
+                    //                         songsData: songList, index: i)));
+                    //           },
+                    //           child: Container(
+                    //             margin: const EdgeInsets.only(
+                    //                 left: 20, right: 20, top: 10, bottom: 10),
+                    //             child: Container(
+                    //                 decoration: BoxDecoration(
+                    //                     borderRadius: BorderRadius.circular(10),
+                    //                     color: AppColors.tabVarViewColor,
+                    //                     boxShadow: [
+                    //                       BoxShadow(
+                    //                         blurRadius: 2,
+                    //                         offset: Offset(0, 0),
+                    //                         color: Colors.grey.withOpacity(0.2),
+                    //                       )
+                    //                     ]),
+                    //                 child: Container(
+                    //                     padding: const EdgeInsets.all(8),
+                    //                     child: Row(
+                    //                       mainAxisAlignment:
+                    //                           MainAxisAlignment.spaceBetween,
+                    //                       children: [
+                    //                         Row(
+                    //                           children: [
+                    //                             Container(
+                    //                               height: 70,
+                    //                               width: 80,
+                    //                               decoration: BoxDecoration(
+                    //                                 image: DecorationImage(
+                    //                                   image: NetworkImage(
+                    //                                       '${songList[i]["img"]}'),
+                    //                                   fit: BoxFit.fill,
+                    //                                 ),
+                    //                                 shape: BoxShape.circle,
+                    //                               ),
+                    //                             ),
+                    //                             SizedBox(
+                    //                               width: 10,
+                    //                             ),
+                    //                             Column(
+                    //                               crossAxisAlignment:
+                    //                                   CrossAxisAlignment.start,
+                    //                               children: [
+                    //                                 Row(
+                    //                                   children: [
+                    //                                     Icon(Icons.star,
+                    //                                         size: 24,
+                    //                                         color: AppColors
+                    //                                             .starColor),
+                    //                                     Text(
+                    //                                       songList[i]["rating"],
+                    //                                       style: TextStyle(
+                    //                                           color: AppColors
+                    //                                               .menu2Color),
+                    //                                     ),
+                    //                                   ],
+                    //                                 ),
+                    //                                 SizedBox(
+                    //                                   height: 5,
+                    //                                 ),
+                    //                                 SizedBox(
+                    //                                   width: 130,
+                    //                                   child: (Text(
+                    //                                     songList[i]["title"],
+                    //                                     overflow: TextOverflow
+                    //                                         .ellipsis,
+                    //                                     style: TextStyle(
+                    //                                         fontSize: 16,
+                    //                                         fontFamily:
+                    //                                             "Avenir",
+                    //                                         fontWeight:
+                    //                                             FontWeight
+                    //                                                 .bold),
+                    //                                   )),
+                    //                                 ),
+                    //                                 SizedBox(
+                    //                                   height: 5,
+                    //                                 ),
+                    //                                 Text(
+                    //                                   songList[i]["text"],
+                    //                                   style: TextStyle(
+                    //                                       fontSize: 16,
+                    //                                       fontFamily: "Avenir",
+                    //                                       color: AppColors
+                    //                                           .subTitleText),
+                    //                                 ),
+                    //                                 SizedBox(
+                    //                                   height: 5,
+                    //                                 ),
+                    //                                 Container(
+                    //                                   width: 60,
+                    //                                   height: 15,
+                    //                                   decoration: BoxDecoration(
+                    //                                     borderRadius:
+                    //                                         BorderRadius
+                    //                                             .circular(3),
+                    //                                     color:
+                    //                                         AppColors.loveColor,
+                    //                                   ),
+                    //                                   child: Text(
+                    //                                     songList[i]["category"],
+                    //                                     style: TextStyle(
+                    //                                         fontSize: 12,
+                    //                                         fontFamily:
+                    //                                             "Avenir",
+                    //                                         color:
+                    //                                             Colors.white),
+                    //                                   ),
+                    //                                   alignment:
+                    //                                       Alignment.center,
+                    //                                 )
+                    //                               ],
+                    //                             ),
+                    //                           ],
+                    //                         ),
+                    //                         OutlinedButton(
+                    //                             onPressed: () async {
+                    //                               final User? user =
+                    //                                   auth.currentUser;
+                    //                               final uid = user?.uid;
+                    //                               var snapshot = await Firestore
+                    //                                       .collection('user')
+                    //                                   .doc(uid)
+                    //                                   .collection('playlist')
+                    //                                   .where("songID",
+                    //                                       isEqualTo: songList[i]
+                    //                                           ["songID"])
+                    //                                   .get();
+                    //                               if (snapshot.docs.length ==
+                    //                                   1) {
+                    //                                 print(
+                    //                                     "document is already exist");
+                    //                               } else {
+                    //                                 await FirebaseFirestore
+                    //                                     .instance
+                    //                                     .collection('user')
+                    //                                     .doc(uid)
+                    //                                     .collection('playlist')
+                    //                                     .doc()
+                    //                                     .set({
+                    //                                   "audio": songList[i]
+                    //                                       ["audio"],
+                    //                                   "rating": songList[i]
+                    //                                       ["rating"],
+                    //                                   "text": songList[i]
+                    //                                       ["text"],
+                    //                                   "img": songList[i]["img"],
+                    //                                   "title": songList[i]
+                    //                                       ["title"],
+                    //                                   "songID": songList[i]
+                    //                                       ["songID"],
+                    //                                 });
+                    //                               }
+                    //                             },
+                    //                             child: Icon(Icons.add))
+                    //                       ],
+                    //                     ))),
+                    //           ),
+                    //         );
+                    //       }),
+                    // ),
                   ],
                 ),
               )));
@@ -395,101 +1240,55 @@ class _MyHomePageState extends State<MyHomePage>
                     SizedBox(
                       height: 10,
                     ),
-                    // Row(
-                    //   children: [
-                    //     Container(
-                    //         margin: const EdgeInsets.only(left: 20),
-                    //         child: Text("Popular Song",
-                    //             style: TextStyle(fontSize: 30)))
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Container(
-                    //     height: 180,
-                    //     child: Stack(
-                    //       children: [
-                    //         Positioned(
-                    //             top: 0,
-                    //             left: -20,
-                    //             right: 0,
-                    //             child: Container(
-                    //                 height: 180,
-                    //                 child: PageView.builder(
-                    //                     controller:
-                    //                         PageController(viewportFraction: 0.8),
-                    //                     itemCount: popularSongs == null
-                    //                         ? 0
-                    //                         : popularSongs?.length,
-                    //                     itemBuilder: (_, i) {
-                    //                       return Container(
-                    //                         height: 180,
-                    //                         width:
-                    //                             MediaQuery.of(context).size.width,
-                    //                         margin:
-                    //                             const EdgeInsets.only(right: 10),
-                    //                         decoration: BoxDecoration(
-                    //                             borderRadius:
-                    //                                 BorderRadius.circular(15),
-                    //                             image: DecorationImage(
-                    //                               image: AssetImage(
-                    //                                   popularSongs?[i]["img"]),
-                    //                               fit: BoxFit.fill,
-                    //                             )),
-                    //                       );
-                    //                     })))
-                    //       ],
-                    //     )),
                     Expanded(
                         child: NestedScrollView(
                             controller: _scrollController,
                             headerSliverBuilder:
                                 (BuildContext context, bool isScroll) {
                               return [
-                                // SliverAppBar(
-                                //   pinned: true,
-                                //   backgroundColor: AppColors.sliverBackground,
-                                //   bottom: PreferredSize(
-                                //     preferredSize: Size.fromHeight(50),
-                                //     child: Container(
-                                //       margin: const EdgeInsets.only(
-                                //           bottom: 20, left: 20),
-                                //       child: TabBar(
-                                //         indicatorPadding:
-                                //             const EdgeInsets.all(0),
-                                //         indicatorSize:
-                                //             TabBarIndicatorSize.label,
-                                //         labelPadding:
-                                //             const EdgeInsets.only(right: 10),
-                                //         controller: _tabController,
-                                //         isScrollable: true,
-                                //         indicator: BoxDecoration(
-                                //             borderRadius:
-                                //                 BorderRadius.circular(25),
-                                //             boxShadow: [
-                                //               BoxShadow(
-                                //                 color: Colors.grey
-                                //                     .withOpacity(0.2),
-                                //                 blurRadius: 7,
-                                //                 offset: Offset(0, 0),
-                                //               )
-                                //             ]),
-                                //         tabs: [
-                                //           AppTabs(
-                                //               color: AppColors.menu1Color,
-                                //               text: "New"),
-                                //           AppTabs(
-                                //               color: AppColors.menu2Color,
-                                //               text: "Popular"),
-                                //           AppTabs(
-                                //               color: AppColors.menu3Color,
-                                //               text: "Treding"),
-                                //         ],
-                                //       ),
-                                //     ),
-                                //   ),
-                                // )
+                                SliverAppBar(
+                                  pinned: true,
+                                  backgroundColor: AppColors.sliverBackground,
+                                  bottom: PreferredSize(
+                                    preferredSize: Size.fromHeight(50),
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          bottom: 20, left: 20),
+                                      child: TabBar(
+                                        indicatorPadding:
+                                            const EdgeInsets.all(0),
+                                        indicatorSize:
+                                            TabBarIndicatorSize.label,
+                                        labelPadding:
+                                            const EdgeInsets.only(right: 10),
+                                        controller: _tabController,
+                                        isScrollable: true,
+                                        indicator: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
+                                                blurRadius: 7,
+                                                offset: Offset(0, 0),
+                                              )
+                                            ]),
+                                        tabs: [
+                                          AppTabs(
+                                              color: AppColors.menu1Color,
+                                              text: "New"),
+                                          AppTabs(
+                                              color: AppColors.menu2Color,
+                                              text: "Popular"),
+                                          AppTabs(
+                                              color: AppColors.menu3Color,
+                                              text: "Treding"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
                               ];
                             },
                             body: TabBarView(
@@ -976,17 +1775,15 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) async {
-    if(await FirebaseAuth.instance.currentUser == null){
+    if (await FirebaseAuth.instance.currentUser == null) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    } else if (await FirebaseAuth.instance.currentUser != null) {
       setState(() {
         _selectedIndex = index;
       });
     }
-    else if (await FirebaseAuth.instance.currentUser != null){
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
@@ -1004,7 +1801,8 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.music_note), label: 'PlayList'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.music_note), label: 'PlayList'),
             BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Profile'),
           ],
           currentIndex: _selectedIndex,
