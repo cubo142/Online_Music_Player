@@ -133,8 +133,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: FlatButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, ResetPassword.routeName);
+                      // Navigator.pushReplacementNamed(
+                      //     context, ResetPassword.routeName);
                     },
                     padding: EdgeInsets.all(20),
                     shape: RoundedRectangleBorder(

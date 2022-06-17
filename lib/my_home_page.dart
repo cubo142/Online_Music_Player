@@ -9,6 +9,7 @@ import 'package:online_music_player/detail_audio_page.dart';
 import 'package:online_music_player/my_playlist_page.dart';
 import 'package:online_music_player/login/login_page.dart';
 import 'package:online_music_player/profile_page.dart';
+import 'package:online_music_player/search_page.dart';
 import 'package:provider/provider.dart';
 import 'app_colors.dart' as AppColors;
 import 'model/songs.dart';
@@ -122,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   //Search
   TextEditingController _searchController = TextEditingController();
+
   _onSearchChange() {
     print(_searchController.text);
   }
@@ -148,59 +150,30 @@ class _MyHomePageState extends State<MyHomePage>
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      child: TextField(
-                        decoration:
-                            InputDecoration(prefixIcon: Icon(Icons.search)),
-                        onChanged: (val) {
-                          setState(() {
-                            name = val;
-                          });
-                        },
-                      ),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, Search.routeName);
+                          },
+                          child: Row(children: [
+                            Icon(Icons.search),
+                            SizedBox(width: 20),
+                            Text(
+                              "Searh a song",
+                              style: TextStyle(fontSize: 20),
+                            )
+                          ])),
                     ),
-                    Container(
-                        margin: const EdgeInsets.only(left: 20, right: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Icon(Icons.menu, size: 24, color: Colors.black),
-                            // Row(
-                            //   children: [
-                            //     SizedBox(
-                            //       width: 10,
-                            //     ),
-                            //     InkWell(
-                            //       onTap: _signOut,
-                            //       child: Icon(Icons.exit_to_app),
-                            //     ),
-                            //     SizedBox(
-                            //       width: 70,
-                            //     ),
-                            //     GestureDetector(
-                            //       onTap: (){
-                            //         if(isLogin == true){
-                            //           print("User is currently logged in");
-                            //         }
-                            //         else if (isLogin == false){
-                            //           Navigator.pushReplacementNamed(context, LoginPage.routeName);
-                            //         }
-                            //       },
-                            //       child: Text("${userEmail}",
-                            //         style: TextStyle(color: Colors.blue)
-                            //         ,
-                            //       ),
-                            //     ),
-                            //
-                            //   ],
-                            // )
-                          ],
-                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       children: [
                         Container(
                             margin: const EdgeInsets.only(left: 20),
                             child: Text("Popular Song",
-                                style: TextStyle(fontSize: 20)))
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: AppColors.lightOrange)))
                       ],
                     ),
                     SizedBox(
@@ -281,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage>
                                     preferredSize: Size.fromHeight(50),
                                     child: Container(
                                       margin: const EdgeInsets.only(
-                                          bottom: 20, left: 20),
+                                          bottom: 10, left: 20),
                                       child: TabBar(
                                         indicatorPadding:
                                             const EdgeInsets.all(0),
@@ -544,6 +517,11 @@ class _MyHomePageState extends State<MyHomePage>
                                                                               i]
                                                                           [
                                                                           "songID"],
+                                                                  "category":
+                                                                      songList[
+                                                                              i]
+                                                                          [
+                                                                          "category"],
                                                                 });
                                                                 Fluttertoast
                                                                     .showToast(
@@ -781,6 +759,11 @@ class _MyHomePageState extends State<MyHomePage>
                                                                               i]
                                                                           [
                                                                           "songID"],
+                                                                  "category":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "category"],
                                                                 });
                                                                 Fluttertoast
                                                                     .showToast(
@@ -1022,6 +1005,11 @@ class _MyHomePageState extends State<MyHomePage>
                                                                               i]
                                                                           [
                                                                           "songID"],
+                                                                  "category":
+                                                                      newSongs[
+                                                                              i]
+                                                                          [
+                                                                          "category"],
                                                                 });
                                                                 Fluttertoast
                                                                     .showToast(
