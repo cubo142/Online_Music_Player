@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:online_music_player/reset_password_page.dart';
 
 import 'login/login_page.dart';
 
@@ -19,7 +20,6 @@ String? userEmail;
 bool? isLogin;
 
 class _ProfilePageState extends State<ProfilePage> {
-
   Future<void> _signOut() async {
     await auth.signOut();
     await Firestore.terminate();
@@ -51,17 +51,23 @@ class _ProfilePageState extends State<ProfilePage> {
     return FutureBuilder(
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if(user == null){
+          if (user == null) {
             return Container(
               child: Column(
                 children: [
-                  SizedBox(height:250),
+                  SizedBox(height: 250),
                   Text("Your are not logged in"),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   GestureDetector(
-                    child: Text("Sign in", style: TextStyle(fontSize: 16,color: Colors.blue),),
-                    onTap: (){
-                      Navigator.pushReplacementNamed(context,LoginPage.routeName);
+                    child: Text(
+                      "Sign in",
+                      style: TextStyle(fontSize: 16, color: Colors.blue),
+                    ),
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, LoginPage.routeName);
                     },
                   ),
                 ],
@@ -122,38 +128,57 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: 10,
                 ),
-                Padding(padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                child: FlatButton(
-                  onPressed: (){},
-                  padding: EdgeInsets.all(20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  color: Color(0xF295502),
-                  child: Row(
-                    children: [
-                      Icon(Icons.lock,color: Colors.orange,),
-                      SizedBox(width: 20),
-                      Expanded(child: Text("Change password",
-                      style:Theme.of(context).textTheme.bodyText1),)
-                    ],
-                  ),
-
-                ),),
-                Padding(padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: FlatButton(
-                    onPressed: _signOut,
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(
+                          context, ResetPassword.routeName);
+                    },
                     padding: EdgeInsets.all(20),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     color: Color(0xF295502),
                     child: Row(
                       children: [
-                        Icon(Icons.exit_to_app,color: Colors.orange,),
+                        Icon(
+                          Icons.lock,
+                          color: Colors.orange,
+                        ),
                         SizedBox(width: 20),
-                        Expanded(child: Text("Sign out",
-                            style:Theme.of(context).textTheme.bodyText1),)
+                        Expanded(
+                          child: Text("Change password",
+                              style: Theme.of(context).textTheme.bodyText1),
+                        )
                       ],
                     ),
-
-                  ),)
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: FlatButton(
+                    onPressed: _signOut,
+                    padding: EdgeInsets.all(20),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    color: Color(0xF295502),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.exit_to_app,
+                          color: Colors.orange,
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: Text("Sign out",
+                              style: Theme.of(context).textTheme.bodyText1),
+                        )
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
           );

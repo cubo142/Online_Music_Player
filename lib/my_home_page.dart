@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:online_music_player/Services/AuthenticationService.dart';
 import 'package:online_music_player/detail_audio_page.dart';
 import 'package:online_music_player/my_playlist_page.dart';
@@ -544,6 +545,10 @@ class _MyHomePageState extends State<MyHomePage>
                                                                           [
                                                                           "songID"],
                                                                 });
+                                                                Fluttertoast
+                                                                    .showToast(
+                                                                        msg:
+                                                                            "Add song to playlist complete");
                                                               }
                                                             },
                                                             child:
@@ -777,6 +782,10 @@ class _MyHomePageState extends State<MyHomePage>
                                                                           [
                                                                           "songID"],
                                                                 });
+                                                                Fluttertoast
+                                                                    .showToast(
+                                                                        msg:
+                                                                            "Add song to playlist complete");
                                                               }
                                                             },
                                                             child:
@@ -1014,6 +1023,10 @@ class _MyHomePageState extends State<MyHomePage>
                                                                           [
                                                                           "songID"],
                                                                 });
+                                                                Fluttertoast
+                                                                    .showToast(
+                                                                        msg:
+                                                                            "Add song to playlist complete");
                                                               }
                                                             },
                                                             child:

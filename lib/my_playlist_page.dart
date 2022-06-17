@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:online_music_player/login/login_page.dart';
 import 'app_colors.dart' as AppColors;
 import 'detail_audio_page.dart';
@@ -12,13 +13,11 @@ class MyPlayListPage extends StatefulWidget {
 
   @override
   State<MyPlayListPage> createState() => _MyPlayListPageState();
-
 }
 
 List songPlayList = [];
 var Firestore = FirebaseFirestore.instance;
 final FirebaseAuth auth = FirebaseAuth.instance;
-
 
 Future<void>? dataFuture;
 
@@ -30,11 +29,13 @@ Future<void>? dataFuture;
 // }
 
 class _MyPlayListPageState extends State<MyPlayListPage> {
-
   final User? user = auth.currentUser;
 
   Future<void> getPlayList() async {
-    QuerySnapshot querySnapshot = await Firestore.collection('user').doc(user?.uid).collection('playlist').get();
+    QuerySnapshot querySnapshot = await Firestore.collection('user')
+        .doc(user?.uid)
+        .collection('playlist')
+        .get();
     songPlayList = querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
@@ -44,7 +45,6 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
     return FutureBuilder(
         future: getPlayList(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-
           return ListView.builder(
               itemCount: songPlayList.length,
               itemBuilder: (_, i) {
@@ -53,10 +53,8 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                DetailAudioPage(
-                                    songsData: songPlayList,
-                                    index: i)));
+                            builder: (context) => DetailAudioPage(
+                                songsData: songPlayList, index: i)));
                   },
                   child: Container(
                     margin: const EdgeInsets.only(
@@ -75,8 +73,7 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                         child: Container(
                             padding: const EdgeInsets.all(8),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
@@ -96,7 +93,8 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                                       width: 10,
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
@@ -158,32 +156,31 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
                                     SizedBox(
                                       width: 30,
                                     ),
-
                                   ],
                                 ),
                                 OutlinedButton(
                                     onPressed: () async {
                                       var snapshot =
-                                      await Firestore.collection('user')
-                                          .doc(user?.uid)
-                                          .collection('playlist')
-                                          .where("songID",
-                                          isEqualTo: songPlayList[i]
-                                          ["songID"])
-                                          .get();
+                                          await Firestore.collection('user')
+                                              .doc(user?.uid)
+                                              .collection('playlist')
+                                              .where("songID",
+                                                  isEqualTo: songPlayList[i]
+                                                      ["songID"])
+                                              .get();
                                       // var querySnapshots = await collection;
                                       var doc = snapshot.docs[0];
                                       doc.reference.delete();
                                       setState(() {});
+                                      Fluttertoast.showToast(
+                                          msg: "Remove song completed");
                                     },
                                     child: Icon(Icons.delete))
                               ],
-                            )
-                           )),
+                            ))),
                   ),
                 );
               });
         });
-
   }
 }
