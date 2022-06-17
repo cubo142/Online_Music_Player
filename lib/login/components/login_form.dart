@@ -6,6 +6,8 @@ import 'package:online_music_player/my_home_page.dart';
 import 'package:online_music_player/signup/signup.dart';
 import 'package:online_music_player/Services/AuthenticationService.dart';
 
+import '../../reset_password_page.dart';
+
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
 
@@ -91,9 +93,12 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           SizedBox(height: 10),
-          Text(
-            "Don't remember password ?",
-            style: TextStyle(color: Colors.blue),
+          GestureDetector(
+            onTap:(){ Navigator.pushNamed(context, ResetPassword.routeName);},
+            child: Text(
+              "Don't remember password ?",
+              style: TextStyle(color: Colors.blue),
+            ),
           ),
           SizedBox(height: 20),
           Container(

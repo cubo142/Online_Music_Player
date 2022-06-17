@@ -44,23 +44,7 @@ class _MyPlayListPageState extends State<MyPlayListPage> {
     return FutureBuilder(
         future: getPlayList(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if(user == null){
-            return Container(
-              child: Column(
-                children: [
-                  SizedBox(height:250),
-                  Text("Your are not logged in"),
-                  SizedBox(height: 10,),
-                  GestureDetector(
-                    child: Text("Sign in", style: TextStyle(fontSize: 16,color: Colors.blue),),
-                    onTap: (){
-                      Navigator.pushReplacementNamed(context,LoginPage.routeName);
-                    },
-                  ),
-                ],
-              ),
-            );
-          }
+
           return ListView.builder(
               itemCount: songPlayList.length,
               itemBuilder: (_, i) {

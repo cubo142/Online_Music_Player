@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:online_music_player/login/login_page.dart';
 import 'package:online_music_player/Services/AuthenticationService.dart';
+import 'package:online_music_player/reset_password_page.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -81,9 +82,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      "Don't remember password ?",
-                      style: TextStyle(color: Colors.blue),
+                    GestureDetector(
+                      onTap:(){ Navigator.pushNamed(context, ResetPassword.routeName);},
+                      child: Text(
+                        "Don't remember password ?",
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ),
                     SizedBox(height: 20),
                     Container(
