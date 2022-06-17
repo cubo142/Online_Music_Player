@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:online_music_player/change_password_page.dart';
 import 'package:online_music_player/reset_password_page.dart';
 
 import 'login/login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
-
+  static String routeName = "/profile";
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -133,8 +134,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: FlatButton(
                     onPressed: () {
-                      // Navigator.pushReplacementNamed(
-                      //     context, ResetPassword.routeName);
+                      Navigator.pushReplacementNamed(
+                          context, ChangePassword.routeName);
                     },
                     padding: EdgeInsets.all(20),
                     shape: RoundedRectangleBorder(

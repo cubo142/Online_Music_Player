@@ -1,32 +1,36 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:online_music_player/my_home_page.dart';
+import 'package:online_music_player/profile_page.dart';
 
-class ResetPassword extends StatefulWidget {
-  const ResetPassword({Key? key}) : super(key: key);
-  static String routeName = "/resetpassword";
+class ChangePassword extends StatefulWidget {
+  const ChangePassword({Key? key}) : super(key: key);
+  static String routeName = "/changepassword";
 
   @override
-  State<ResetPassword> createState() => _ResetPasswordState();
+  State<ChangePassword> createState() => _ChangePasswordState();
 }
 
-class _ResetPasswordState extends State<ResetPassword> {
-  final emailController = TextEditingController();
+class _ChangePasswordState extends State<ChangePassword> {
+  final newPassController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    emailController.dispose();
+    newPassController.dispose();
     super.dispose();
   }
 
+  final currentUser = FirebaseAuth.instance.currentUser;
+
   Future resetPassword() async {
     try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: emailController.text.trim());
-      Navigator.of(context).pop();
+      await currentUser!.updatePassword(newPassController.text.trim());
     } on FirebaseAuthException catch (e) {
-      print(e);
+      Fluttertoast.showToast(msg: e.toString());
     }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -34,7 +38,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('Reset Password'),
+        title: Text('Change Password'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -44,23 +48,24 @@ class _ResetPasswordState extends State<ResetPassword> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Insert your email to reset your password',
+                'Insert your new password',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24),
               ),
               SizedBox(height: 20),
               TextFormField(
-                controller: emailController,
+                controller: newPassController,
                 cursorColor: Colors.white,
+                obscureText: true,
                 textInputAction: TextInputAction.done,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: 'New Password'),
               ),
               SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: resetPassword,
-                icon: Icon(Icons.email_outlined),
+                icon: Icon(Icons.key),
                 label: Text(
-                  'Reset password',
+                  'Change password',
                   style: TextStyle(fontSize: 24),
                 ),
               )

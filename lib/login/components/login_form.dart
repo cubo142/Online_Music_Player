@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:online_music_player/my_home_page.dart';
 import 'package:online_music_player/signup/signup.dart';
 import 'package:online_music_player/Services/AuthenticationService.dart';
@@ -63,10 +64,14 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(alignment: Alignment.topRight,
-          child: IconButton(icon: Icon(Icons.close), onPressed: () {
-            Navigator.pushReplacementNamed(context, Home.routeName);
-          },),
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, Home.routeName);
+              },
+            ),
           ),
           Text(
             "MSPlay",
@@ -94,7 +99,9 @@ class _LoginFormState extends State<LoginForm> {
           ),
           SizedBox(height: 10),
           GestureDetector(
-            onTap:(){ Navigator.pushNamed(context, ResetPassword.routeName);},
+            onTap: () {
+              Navigator.pushNamed(context, ResetPassword.routeName);
+            },
             child: Text(
               "Don't remember password ?",
               style: TextStyle(color: Colors.blue),
@@ -112,8 +119,9 @@ class _LoginFormState extends State<LoginForm> {
                         context: context);
                 print(user);
                 if (user != null) {
-                  Navigator.of(context)
-                      .pushReplacementNamed(Home.routeName);
+                  Navigator.of(context).pushReplacementNamed(Home.routeName);
+                } else {
+                  Fluttertoast.showToast(msg: "Username or Password wrong!");
                 }
               },
               fillColor: Color(0xFF2196F3),
