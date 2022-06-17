@@ -251,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage>
                                   pinned: true,
                                   backgroundColor: AppColors.sliverBackground,
                                   bottom: PreferredSize(
-                                    preferredSize: Size.fromHeight(50),
+                                    preferredSize: Size.fromHeight(10),
                                     child: Container(
                                       margin: const EdgeInsets.only(
                                           bottom: 10, left: 20),
